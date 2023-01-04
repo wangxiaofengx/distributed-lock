@@ -1,4 +1,5 @@
 # distributed-lock
+[![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt)
 * 支持zookeeper锁和redis锁
 * 内部集成了curator框架和redisson框架
 * 开箱即用，无业务代码侵入
