@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 public class RedissonConfigure {
 
     @Bean
-    @ConditionalOnBean(value = RedissonProperties.class)
+    @ConditionalOnBean(value = {RedissonClient.class,RedissonProperties.class})
     @ConditionalOnProperty(prefix = DistributedLockConstants.PREFIX, name = "mode", havingValue = RedissonLock.MODE)
     public RedissonClient redissonClient(RedissonProperties redissonProperties) {
         Config config = new Config();

@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class CuratorConfigure {
 
     @Bean
-    @ConditionalOnBean(CuratorProperties.class)
+    @ConditionalOnBean(value = {CuratorFramework.class, CuratorProperties.class})
     @ConditionalOnProperty(prefix = DistributedLockConstants.PREFIX, name = "mode", havingValue = CuratorLock.MODE)
     public CuratorFramework curatorFramework(CuratorProperties curatorProperties) {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(curatorProperties.elapsedTimeMs, curatorProperties.retryCount);
