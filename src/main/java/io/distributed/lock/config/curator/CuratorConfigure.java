@@ -8,6 +8,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ public class CuratorConfigure {
 
     @Bean
     @ConditionalOnBean(value = {CuratorFramework.class, CuratorProperties.class})
+    @ConditionalOnMissingBean(CuratorFramework.class)
     @ConditionalOnProperty(prefix = DistributedLockConstants.PREFIX, name = "mode", havingValue = CuratorLock.MODE)
     public CuratorFramework curatorFramework(CuratorProperties curatorProperties) {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(curatorProperties.elapsedTimeMs, curatorProperties.retryCount);
