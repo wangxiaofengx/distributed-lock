@@ -32,6 +32,7 @@ public class RedissonConfigure {
 
     @Bean(destroyMethod = "destroy")
     @ConditionalOnBean(value = {RedissonClient.class, RedissonProperties.class})
+    @ConditionalOnProperty(prefix = DistributedLockConstants.PREFIX, name = "mode", havingValue = RedissonLock.MODE)
     public RedissonLock redissonLock(RedissonClient redissonClient, RedissonProperties redissonProperties) {
         RedissonLock redissonLock = new RedissonLock(redissonClient, DistributedLockI.PATH + "-" + redissonProperties.path);
         return redissonLock;

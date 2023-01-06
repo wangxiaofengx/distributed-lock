@@ -47,6 +47,7 @@ public class CuratorConfigure {
 
     @Bean(destroyMethod = "destroy")
     @ConditionalOnBean(value = {CuratorFramework.class, CuratorProperties.class})
+    @ConditionalOnProperty(prefix = DistributedLockConstants.PREFIX, name = "mode", havingValue = CuratorLock.MODE)
     public CuratorLock curatorLock(CuratorFramework client, CuratorProperties curatorProperties) {
         CuratorLock curatorLock = new CuratorLock(client, DistributedLockI.PATH + "-" + curatorProperties.path);
         return curatorLock;
