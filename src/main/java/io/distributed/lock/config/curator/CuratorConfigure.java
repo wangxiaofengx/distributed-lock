@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class CuratorConfigure {
 
     @Bean
-    @ConditionalOnBean(value = {CuratorFramework.class, CuratorProperties.class})
+    @ConditionalOnBean(CuratorProperties.class)
     @ConditionalOnMissingBean(CuratorFramework.class)
     @ConditionalOnProperty(prefix = DistributedLockConstants.PREFIX, name = "mode", havingValue = CuratorLock.MODE)
     public CuratorFramework curatorFramework(CuratorProperties curatorProperties) {

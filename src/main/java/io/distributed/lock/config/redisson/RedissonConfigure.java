@@ -22,7 +22,7 @@ import org.springframework.util.StringUtils;
 public class RedissonConfigure {
 
     @Bean
-    @ConditionalOnBean(value = {RedissonProperties.class})
+    @ConditionalOnBean(RedissonProperties.class)
     @ConditionalOnMissingBean(RedissonClient.class)
     @ConditionalOnProperty(prefix = DistributedLockConstants.PREFIX, name = "mode", havingValue = RedissonLock.MODE)
     public RedissonClient redissonClient(RedissonProperties redissonProperties) {
