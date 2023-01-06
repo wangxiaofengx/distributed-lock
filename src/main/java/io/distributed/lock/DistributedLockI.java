@@ -2,6 +2,7 @@ package io.distributed.lock;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -12,7 +13,23 @@ import java.util.concurrent.locks.Lock;
  */
 public interface DistributedLockI extends Lock {
 
-    String PATH = "/" + UUID.randomUUID();
+    String PATH = "/" + DistributedLockI.class.getName();
+
+    String DEFAULT_LOCK_NAME = "default";
 
     void lock(long time, TimeUnit unit);
+
+    void lock(String name);
+
+    void lock(String name, long time, TimeUnit unit);
+
+    void lockInterruptibly(String name) throws InterruptedException;
+
+    boolean tryLock(String name);
+
+    boolean tryLock(String name, long time, TimeUnit unit) throws InterruptedException;
+
+    void unlock(String name);
+
+    Condition newCondition(String name);
 }

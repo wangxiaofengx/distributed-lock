@@ -1,5 +1,6 @@
 package io.distributed.lock.annotation;
 
+import io.distributed.lock.DistributedLockI;
 import io.distributed.util.SpringProxyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +35,9 @@ public class DistributedLockScanner extends AbstractAutoProxyCreator
 
     DistributedLockInterceptor distributedLockInterceptor;
 
-    Lock lock;
+    DistributedLockI lock;
 
-    public DistributedLockScanner(Lock lock) {
+    public DistributedLockScanner(DistributedLockI lock) {
         setProxyTargetClass(true);
         this.lock = lock;
     }

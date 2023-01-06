@@ -1,16 +1,21 @@
 package io.distributed.lock.annotation;
 
+import io.distributed.lock.DistributedLockI;
 import io.distributed.lock.exception.DistributedLockTimeoutException;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
+import java.util.function.Function;
 
 /**
  * 分布式锁拦截器
@@ -18,11 +23,11 @@ import java.util.concurrent.locks.Lock;
  * @author wangxiaofeng
  * @date 2023/1/4 9:54
  */
-public class DistributedLockInterceptor implements MethodInterceptor {
+class DistributedLockInterceptor implements MethodInterceptor {
 
-    Lock lock;
+    DistributedLockI lock;
 
-    public DistributedLockInterceptor(Lock lock) {
+    public DistributedLockInterceptor(DistributedLockI lock) {
         this.lock = lock;
     }
 
@@ -35,20 +40,21 @@ public class DistributedLockInterceptor implements MethodInterceptor {
             final Method method = BridgeMethodResolver.findBridgedMethod(specificMethod);
             final DistributedLock distributedLock = getAnnotation(method, targetClass, DistributedLock.class);
             if (distributedLock != null) {
+                String name = distributedLock.name();
                 if (distributedLock.timeout() > 0) {
-                    boolean lockSuccess = this.lock.tryLock(distributedLock.timeout(), distributedLock.unit());
+                    boolean lockSuccess = this.lock.tryLock(name, distributedLock.timeout(), distributedLock.unit());
                     if (!lockSuccess) {
                         throw new DistributedLockTimeoutException("distributed lock acquire timeout");
                     }
                 } else {
-                    this.lock.lock();
+                    this.lock.lock(name);
                 }
 
                 try {
                     Object proceed = methodInvocation.proceed();
                     return proceed;
                 } finally {
-                    this.lock.unlock();
+                    this.lock.unlock(name);
                 }
             }
         }

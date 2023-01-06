@@ -1,6 +1,7 @@
 package io.distributed.lock.config.curator;
 
 import io.distributed.lock.DistributedLockConstants;
+import io.distributed.lock.DistributedLockI;
 import io.distributed.lock.exception.DistributedLockException;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,11 +24,10 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class CuratorConfigure {
 
-    @Bean(destroyMethod = "destroy")
-    @ConditionalOnBean(value = CuratorProperties.class)
+    @Bean
+    @ConditionalOnBean(CuratorProperties.class)
     @ConditionalOnProperty(prefix = DistributedLockConstants.PREFIX, name = "mode", havingValue = CuratorLock.MODE)
-    public CuratorLock curatorFramework(CuratorProperties curatorProperties) {
-
+    public CuratorFramework curatorFramework(CuratorProperties curatorProperties) {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(curatorProperties.elapsedTimeMs, curatorProperties.retryCount);
         CuratorFramework client = CuratorFrameworkFactory.builder().connectString(curatorProperties.connectString).
                 sessionTimeoutMs(curatorProperties.sessionTimeoutMs).
@@ -41,7 +42,13 @@ public class CuratorConfigure {
                 throw new DistributedLockException(e);
             }
         }
-        CuratorLock curatorLock = new CuratorLock(client, curatorProperties.path);
+        return client;
+    }
+
+    @Bean(destroyMethod = "destroy")
+    @ConditionalOnBean(value = {CuratorFramework.class, CuratorProperties.class})
+    public CuratorLock curatorLock(CuratorFramework client, CuratorProperties curatorProperties) {
+        CuratorLock curatorLock = new CuratorLock(client, DistributedLockI.PATH + "-" + curatorProperties.path);
         return curatorLock;
     }
 }

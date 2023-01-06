@@ -19,7 +19,7 @@ public class RedissonProperties {
 
     Single single;
 
-    String path = DistributedLockI.PATH;
+    String path = "default";
 
     @Data
     public static class Single {

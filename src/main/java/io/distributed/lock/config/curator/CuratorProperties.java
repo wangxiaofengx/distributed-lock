@@ -29,5 +29,5 @@ public class CuratorProperties {
 
     boolean startBlock = false;
 
-    String path = DistributedLockI.PATH;
+    String path = "default";
 }

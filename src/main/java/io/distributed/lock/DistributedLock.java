@@ -32,6 +32,41 @@ public class DistributedLock implements DistributedLockI {
     }
 
     @Override
+    public void lock(String name) {
+        this.getLock().lock(name);
+    }
+
+    @Override
+    public void lock(String name, long time, TimeUnit unit) {
+        this.getLock().lock(name, time, unit);
+    }
+
+    @Override
+    public void lockInterruptibly(String name) throws InterruptedException {
+        this.getLock().lockInterruptibly(name);
+    }
+
+    @Override
+    public boolean tryLock(String name) {
+        return this.getLock().tryLock(name);
+    }
+
+    @Override
+    public boolean tryLock(String name, long time, TimeUnit unit) throws InterruptedException {
+        return this.getLock().tryLock(name, time, unit);
+    }
+
+    @Override
+    public void unlock(String name) {
+        this.getLock().unlock(name);
+    }
+
+    @Override
+    public Condition newCondition(String name) {
+        return this.getLock().newCondition(name);
+    }
+
+    @Override
     public void lockInterruptibly() throws InterruptedException {
         this.getLock().lockInterruptibly();
     }

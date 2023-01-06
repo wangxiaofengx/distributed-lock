@@ -1,5 +1,7 @@
 package io.distributed.lock.annotation;
 
+import io.distributed.lock.DistributedLockI;
+
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
@@ -15,13 +17,21 @@ import java.util.concurrent.TimeUnit;
 public @interface DistributedLock {
 
     /**
+     * 锁名称
+     * @return
+     */
+    String name() default DistributedLockI.DEFAULT_LOCK_NAME;
+
+    /**
      * 锁超时时间
+     *
      * @return
      */
     long timeout() default 0;
 
     /**
      * 超时时间单位
+     *
      * @return
      */
     TimeUnit unit() default TimeUnit.MILLISECONDS;
